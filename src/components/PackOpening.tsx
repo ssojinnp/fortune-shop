@@ -336,30 +336,32 @@ function TodayScreen({
             </motion.div>
           )}
 
-          <div
-            className={`absolute left-1/2 top-16 h-[552px] w-[340px] -translate-x-1/2 [perspective:1200px] ${
-              cardFlipped ? "z-40" : "z-10"
-            }`}
-          >
-            <motion.div
-              className="h-full w-full cursor-grab select-none touch-none active:cursor-grabbing"
-              initial={false}
-              animate={{
-                y: cardVisible ? (cardFlipped ? -32 : -10) : 84,
-                scale: cardVisible ? 1 : 0.9,
-                opacity: cardVisible ? 1 : 0,
-              }}
-              onPointerDown={handleCardPointerDown}
-              onPointerMove={handleCardPointerMove}
-              onPointerUp={handleCardPointerUp}
-              onPointerCancel={handleCardPointerUp}
-              transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
-              style={{ rotateX: smoothTiltX, rotateY: smoothFlipY, transformStyle: "preserve-3d" }}
+          {cardVisible && (
+            <div
+              className={`absolute left-1/2 top-16 h-[552px] w-[340px] -translate-x-1/2 [perspective:1200px] ${
+                cardFlipped ? "z-40" : "z-10"
+              }`}
             >
-              <CardBack visible={!cardFlipped} />
-              <CardFront card={activeCard} rarity={activeCard.rarity} visible={cardFlipped} />
-            </motion.div>
-          </div>
+              <motion.div
+                className="h-full w-full cursor-grab select-none touch-none active:cursor-grabbing"
+                initial={false}
+                animate={{
+                  y: cardFlipped ? -32 : -10,
+                  scale: 1,
+                  opacity: 1,
+                }}
+                onPointerDown={handleCardPointerDown}
+                onPointerMove={handleCardPointerMove}
+                onPointerUp={handleCardPointerUp}
+                onPointerCancel={handleCardPointerUp}
+                transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
+                style={{ rotateX: smoothTiltX, rotateY: smoothFlipY, transformStyle: "preserve-3d" }}
+              >
+                <CardBack visible={!cardFlipped} />
+                <CardFront card={activeCard} rarity={activeCard.rarity} visible={cardFlipped} />
+              </motion.div>
+            </div>
+          )}
 
           {!cardVisible && (
             <LuckyCardPack
@@ -387,9 +389,9 @@ export function PackOpening() {
   const [view, setView] = useState<View>("today");
   const [storage, setStorage] = useState<AppStorage>({ histories: [], collection: {} });
   const [selectedCard, setSelectedCard] = useState<FortuneCardData>(testOpenedCard);
-  const [drawnCard, setDrawnCard] = useState<FortuneCardData | null>(testOpenedCard);
+  const [drawnCard, setDrawnCard] = useState<FortuneCardData | null>(null);
   const [notice, setNotice] = useState("하루에 한 번, 오늘의 행운 친구를 만나보세요.");
-  const { stage, rarity, isOpening, isRevealed, openPack, reset, reveal } =
+  const { stage, rarity, isOpening, isRevealed, openPack, reset } =
     usePackOpening();
 
   const todayCard = drawnCard ?? selectedCard;
@@ -420,17 +422,14 @@ export function PackOpening() {
   useEffect(() => {
     const nextStorage = readStorage();
     setStorage(nextStorage);
-    setDrawnCard(testOpenedCard);
     setSelectedCard(testOpenedCard);
-    reveal(testOpenedCard.rarity);
 
     const storedTodayCard = findCard(nextStorage.todayDraw?.cardId);
     if (nextStorage.todayDraw?.date === getTodayKey() && storedTodayCard) {
-      setDrawnCard(testOpenedCard);
       setSelectedCard(testOpenedCard);
       setNotice("오늘은 이미 행운 친구를 만났어요. 내일 새로운 카드가 찾아올 거예요.");
     }
-  }, [reveal, testOpenedCard]);
+  }, [testOpenedCard]);
 
   const handleOpen = () => {
     reset();
