@@ -1,12 +1,9 @@
-# Card Images
+# Card Assets
 
-Generated card images go here.
+Card artwork is split by purpose.
 
-Use the same filenames already referenced by `src/data/fortuneCards.json`:
+- Character PNGs: `characters/card-001.png`
+- Background PNGs: `backgrounds/bg-card-001.png`
+- Card back image: `card-back.png`
 
-- `card-001.png`
-- `card-002.png`
-- ...
-- `card-030.png`
-
-In the app, these files are loaded as `/assets/cards/card-001.png`.
+Card frames and text are rendered by React/CSS. Do not place full card images in this folder.
