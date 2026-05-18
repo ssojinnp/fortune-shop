@@ -6,8 +6,8 @@ type OpeningStage = "idle" | "shake" | "tear" | "rise" | "flip" | "revealed";
 const timeline: Array<{ stage: OpeningStage; delay: number }> = [
   { stage: "shake", delay: 0 },
   { stage: "tear", delay: 460 },
-  { stage: "rise", delay: 900 },
-  { stage: "flip", delay: 1_520 },
+  { stage: "rise", delay: 760 },
+  { stage: "flip", delay: 1_560 },
   { stage: "revealed", delay: 2_350 },
 ];
 

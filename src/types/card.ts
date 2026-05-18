@@ -28,11 +28,6 @@ export type FortuneCard = {
   personality: string;
   likes: string[];
   flavorText: string;
-  characterConcept: string;
-  fortuneMessage: string;
-  luckyItem: string;
-  luckyColor: string;
-  luckyTime: string;
 };
 
 export type CardHistory = {

@@ -7,6 +7,9 @@ type LuckyCardPackProps = {
   isOpen: boolean;
   rarity: Rarity;
   packImage?: string;
+  disabled?: boolean;
+  onOpen: () => void;
+  label: string;
 };
 
 const rarityVariant: Record<Rarity, CardPackVariant> = {
@@ -16,16 +19,30 @@ const rarityVariant: Record<Rarity, CardPackVariant> = {
   secret: "night",
 };
 
-export function LuckyCardPack({ isShaking, isOpen, rarity, packImage }: LuckyCardPackProps) {
+export function LuckyCardPack({
+  isShaking,
+  isOpen,
+  rarity,
+  packImage,
+  disabled = false,
+  onOpen,
+  label,
+}: LuckyCardPackProps) {
   return (
-    <motion.div
-      className="absolute left-1/2 top-[18px] z-20 h-[500px] w-[314px] origin-center"
+    <motion.button
+      type="button"
+      className="absolute left-1/2 top-16 z-20 h-[552px] w-[340px] origin-center cursor-pointer bg-transparent p-0 text-left outline-none transition focus-visible:ring-4 focus-visible:ring-[#f6c85f]/70 disabled:cursor-default"
       animate={
         isShaking
-          ? { x: [-157, -171, -141, -165, -157], rotate: [0, -5, 5, -2, 0] }
-          : { x: -157, rotate: 0 }
+          ? { x: [-170, -184, -154, -178, -170], rotate: [0, -5, 5, -2, 0] }
+          : { x: -170, rotate: 0 }
       }
+      whileHover={disabled ? undefined : { y: -6, scale: 1.02 }}
+      whileTap={disabled ? undefined : { y: 0, scale: 0.98 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
+      onClick={onOpen}
+      disabled={disabled}
+      aria-label={label}
     >
       <motion.div
         className="origin-top"
@@ -36,8 +53,9 @@ export function LuckyCardPack({ isShaking, isOpen, rarity, packImage }: LuckyCar
           variant={rarityVariant[rarity]}
           title="오늘의 행운팩"
           packImage={packImage}
+          disabled={disabled}
         />
       </motion.div>
-    </motion.div>
+    </motion.button>
   );
 }

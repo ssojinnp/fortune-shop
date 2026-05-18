@@ -34,10 +34,10 @@ export function createHistory(card: FortuneCard): CardHistory {
     id: `${card.id}-${createdAt}`,
     cardId: card.id,
     date: getTodayKey(),
-    message: card.messages[0] ?? card.fortuneMessage,
-    luckyItem: card.luckyItems[0] ?? card.luckyItem,
-    luckyColor: card.luckyColors[0] ?? card.luckyColor,
-    luckyTime: card.luckyTimes[0] ?? card.luckyTime,
+    message: card.messages[0],
+    luckyItem: card.luckyItems[0],
+    luckyColor: card.luckyColors[0],
+    luckyTime: card.luckyTimes[0],
     createdAt,
   };
 }

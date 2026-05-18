@@ -8,6 +8,7 @@ import { drawFortuneCard } from "../utils/drawCard";
 import { applyDrawToStorage, readStorage, resetStorage } from "../utils/storage";
 import { CardBack } from "./CardBack";
 import { CardFront } from "./CardFront";
+import { elementMeta } from "./ElementBadge";
 import { FortuneCard } from "./FortuneCard";
 import { LuckyCardPack } from "./LuckyCardPack";
 import { PixelCardArt } from "./PixelCardArt";
@@ -108,49 +109,62 @@ function CollectionGrid({
   onSelect: (card: FortuneCardData) => void;
 }) {
   return (
-    <section className="grid max-h-[680px] grid-cols-2 gap-2 overflow-auto pr-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <section className="grid max-h-[680px] grid-cols-1 gap-2.5 overflow-auto pr-1 md:grid-cols-2">
       {fortuneCards.map((card) => {
         const selected = card.id === selectedId;
         const collectionItem = storage.collection[card.id];
         const obtained = Boolean(collectionItem);
         const effect = rarityEffects[card.rarity];
+        const element = elementMeta[card.element];
 
         return (
           <button
             key={card.id}
-            className={`min-h-[142px] border-2 p-2 text-left transition hover:-translate-y-0.5 ${
+            className={`grid min-h-[112px] grid-cols-[76px_minmax(0,1fr)] items-stretch gap-3 border-2 p-2.5 text-left transition hover:-translate-y-0.5 ${
               selected
                 ? "border-[#f6c85f] bg-[#fff7df]/12"
                 : "border-[#5a3f87] bg-[#17142b]/68 hover:border-[#b99cff]"
-            } ${obtained ? "" : "opacity-70"}`}
+            }`}
             onClick={() => onSelect(card)}
+            aria-label={obtained ? `${card.name} 도감 카드` : `${card.name} 미획득 카드`}
           >
-            <div className="flex items-start gap-2">
-              <PixelCardArt card={card} muted={!obtained} />
-              <div className="min-w-0">
-                <p className="truncate text-xs font-black text-[#fff9e8]">
-                  {obtained ? card.name : "미획득 카드"}
+            <div className="grid min-h-[90px] place-items-center">
+              <PixelCardArt card={card} fitContainer muted={!obtained} revealed={obtained} />
+            </div>
+            <div className="grid min-w-0 content-center gap-1.5">
+              <div className="flex min-w-0 items-center justify-between gap-2">
+                <p className="text-[10px] font-black uppercase leading-none tracking-[0.14em] text-[#f6c85f]/85">
+                  No.{String(card.no).padStart(3, "0")}
                 </p>
-                <p className="mt-1 line-clamp-2 text-[10px] font-bold leading-4 text-[#ddd3ee]">
-                  {obtained ? card.role : "아직 만나지 못한 행운상점 친구예요."}
+                {obtained && (
+                  <span className="shrink-0 border border-[#5a3f87] bg-[#241d3f]/76 px-1.5 py-0.5 text-[9px] font-black leading-none text-[#fff9e8]">
+                    x{collectionItem.collectedCount}
+                  </span>
+                )}
+              </div>
+
+              <div className="min-w-0 space-y-1">
+                <p className="truncate text-[16px] font-black leading-5 text-[#fff9e8]">
+                  {card.name}
+                </p>
+                <p className="line-clamp-2 text-[12px] font-semibold leading-[16px] text-[#ddd3ee]">
+                  {card.role}
                 </p>
               </div>
-            </div>
-            <div className="mt-2 flex flex-wrap gap-1">
-              <span
-                className="border border-[#3b247a] px-1.5 py-0.5 text-[9px] font-black tracking-[0.12em] text-[#2a2038]"
-                style={{ background: effect.accent }}
-              >
-                {rarityLabels[card.rarity]}
-              </span>
-              <span className="border border-[#5a3f87] bg-[#241d3f]/76 px-1.5 py-0.5 text-[9px] font-black text-[#fff9e8]">
-                {card.element}
-              </span>
-              {obtained && (
-                <span className="border border-[#5a3f87] bg-[#241d3f]/76 px-1.5 py-0.5 text-[9px] font-black text-[#fff9e8]">
-                  x{collectionItem.collectedCount}
+
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span
+                  className="border border-[#3b247a] px-1.5 py-1 text-[9px] font-black leading-none tracking-[0.12em] text-[#2a2038]"
+                  style={{ background: effect.accent }}
+                >
+                  {rarityLabels[card.rarity]}
                 </span>
-              )}
+                <span
+                  className={`border px-1.5 py-1 text-[9px] font-black leading-none tracking-[0.08em] ${element.className}`}
+                >
+                  {element.icon} {element.label}
+                </span>
+              </div>
             </div>
           </button>
         );
@@ -209,7 +223,6 @@ function TodayScreen({
   activeCard,
   alreadyDrewToday,
   cardFlipped,
-  cardVisible,
   effect,
   isOpening,
   isRevealed,
@@ -224,7 +237,6 @@ function TodayScreen({
   activeCard: FortuneCardData;
   alreadyDrewToday: boolean;
   cardFlipped: boolean;
-  cardVisible: boolean;
   effect: (typeof rarityEffects)[Rarity];
   isOpening: boolean;
   isRevealed: boolean;
@@ -287,6 +299,13 @@ function TodayScreen({
     }
   };
 
+  const shouldRenderCard = stage !== "idle" && stage !== "shake";
+  const cardOpacity = stage === "tear" ? 0 : 1;
+  const cardY = cardFlipped ? -32 : stage === "rise" ? -10 : 82;
+  const cardScale = stage === "tear" ? 0.9 : 1;
+  const isPackStage = stage === "idle" || stage === "shake" || stage === "tear";
+  const openLabel = alreadyDrewToday ? "오늘 카드 보기" : isRevealed ? "결과 다시 보기" : "오늘의 팩 열기";
+
   return (
     <ContentPanel>
       <div className="mx-auto w-full max-w-[560px]">
@@ -336,7 +355,7 @@ function TodayScreen({
             </motion.div>
           )}
 
-          {cardVisible && (
+          {shouldRenderCard && (
             <div
               className={`absolute left-1/2 top-16 h-[552px] w-[340px] -translate-x-1/2 [perspective:1200px] ${
                 cardFlipped ? "z-40" : "z-10"
@@ -346,15 +365,15 @@ function TodayScreen({
                 className="h-full w-full cursor-grab select-none touch-none active:cursor-grabbing"
                 initial={false}
                 animate={{
-                  y: cardFlipped ? -32 : -10,
-                  scale: 1,
-                  opacity: 1,
+                  y: cardY,
+                  scale: cardScale,
+                  opacity: cardOpacity,
                 }}
                 onPointerDown={handleCardPointerDown}
                 onPointerMove={handleCardPointerMove}
                 onPointerUp={handleCardPointerUp}
                 onPointerCancel={handleCardPointerUp}
-                transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
                 style={{ rotateX: smoothTiltX, rotateY: smoothFlipY, transformStyle: "preserve-3d" }}
               >
                 <CardBack visible={!cardFlipped} />
@@ -363,21 +382,22 @@ function TodayScreen({
             </div>
           )}
 
-          {!cardVisible && (
+          {isPackStage && (
             <LuckyCardPack
               isShaking={stage === "shake"}
               isOpen={packOpened}
               rarity={rarity}
               packImage={packImage}
+              disabled={isOpening}
+              onOpen={onOpen}
+              label={openLabel}
             />
           )}
         </div>
 
-        <div className="mt-1 flex min-h-12 flex-wrap items-center justify-center gap-3">
-          <button className="ui-btn ui-btn-primary" onClick={onOpen} disabled={isOpening}>
-            {alreadyDrewToday ? "오늘 카드 보기" : isRevealed ? "결과 다시 보기" : "오늘의 팩 열기"}
-          </button>
-        </div>
+        <p className="mt-0 text-center text-xs font-black leading-5 text-[#f6c85f]/90">
+          {isOpening ? "행운팩을 여는 중이에요." : "카드팩을 눌러 열어보세요."}
+        </p>
         <p className="mt-1 text-center text-xs font-bold leading-5 text-[#efe9ff]/78">{notice}</p>
       </div>
     </ContentPanel>
@@ -524,7 +544,6 @@ export function PackOpening() {
             activeCard={todayCard}
             alreadyDrewToday={alreadyDrewToday}
             cardFlipped={cardFlipped}
-            cardVisible={cardVisible}
             effect={effect}
             isOpening={isOpening}
             isRevealed={isRevealed}
@@ -561,7 +580,7 @@ export function PackOpening() {
                 <FortuneCard
                   card={selectedCard}
                   collectionItem={selectedCollectionItem}
-                  obtained
+                  obtained={Boolean(selectedCollectionItem)}
                 />
                 <div className={`${surfaceClass} hidden`}>
                   <p className="font-modern-en text-xs font-semibold uppercase tracking-[0.12em] text-[#f6c85f]/85">
@@ -574,7 +593,7 @@ export function PackOpening() {
                     {selectedCard.role}
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#8d7fa8]">
-                    {selectedCard.messages[0] ?? selectedCard.fortuneMessage}
+                    {selectedCard.messages[0]}
                   </p>
                   {selectedCollectionItem && (
                     <p className="mt-3 text-xs font-semibold text-[#77d7b2]/90">

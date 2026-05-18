@@ -37,7 +37,7 @@ export function CardPack({
   if (packImage) {
     return (
       <article
-        className={`relative mx-auto grid h-[500px] w-[314px] select-none place-items-center overflow-visible bg-transparent ${
+        className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-visible bg-transparent ${
           disabled ? "grayscale opacity-60" : ""
         }`}
         aria-label={`${title} ${variant} card pack`}
@@ -45,7 +45,7 @@ export function CardPack({
         <img
           src={packImageSrc}
           alt={`${title} 카드팩`}
-          className="h-full w-full scale-[1.18] object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
+          className="h-full w-full scale-[1.03] object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
         />
       </article>
     );
@@ -53,7 +53,7 @@ export function CardPack({
 
   return (
     <article
-      className={`relative mx-auto grid h-[500px] w-[314px] select-none place-items-center overflow-hidden border-4 border-[#1c1630] bg-gradient-to-b ${style.fallback} shadow-[0_16px_0_rgba(20,13,36,0.42)] ${
+      className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-hidden border-4 border-[#1c1630] bg-gradient-to-b ${style.fallback} shadow-[0_16px_0_rgba(20,13,36,0.42)] ${
         disabled ? "grayscale opacity-60" : ""
       }`}
       aria-label={`${title} ${variant} card pack`}

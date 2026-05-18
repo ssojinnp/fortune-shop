@@ -74,7 +74,10 @@ function IntimacyFooter({ level = 1, count = 1 }: { level?: number; count?: numb
 export function FortuneCard({ card, collectionItem, obtained = true }: FortuneCardProps) {
   const level = collectionItem?.intimacyLevel ?? Math.max(1, Math.ceil(card.no / 10));
   const count = collectionItem?.collectedCount ?? 1;
-  const message = card.messages[0] ?? card.fortuneMessage;
+  const message = obtained ? card.messages[0] : "아직 행운 메시지는 열리지 않았어요.";
+  const luckyItems = obtained ? card.luckyItems : ["?", "?", "?"];
+  const luckyColors = obtained ? card.luckyColors : ["?", "?", "?"];
+  const luckyTimes = obtained ? card.luckyTimes : ["?", "?", "?"];
 
   return (
     <article
@@ -116,12 +119,18 @@ export function FortuneCard({ card, collectionItem, obtained = true }: FortuneCa
         </section>
 
         <section className="grid grid-cols-3 gap-2">
-          <InfoTile label="행운 아이템" value={card.luckyItems[0] ?? card.luckyItem} />
-          <InfoTile label="행운 컬러" value={card.luckyColors[0] ?? card.luckyColor} />
-          <InfoTile label="행운 시간" value={card.luckyTimes[0] ?? card.luckyTime} />
+          <InfoTile label="행운 아이템" value={luckyItems[0]} />
+          <InfoTile label="행운 컬러" value={luckyColors[0]} />
+          <InfoTile label="행운 시간" value={luckyTimes[0]} />
         </section>
 
-        <IntimacyFooter level={level} count={count} />
+        {obtained ? (
+          <IntimacyFooter level={level} count={count} />
+        ) : (
+          <footer className="grid h-[38px] place-items-center overflow-hidden rounded-[8px] border border-[#d8b46a] bg-[#fff9e8] px-2.5 py-1 text-center text-[10px] font-black text-[#6a4a3c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.68)]">
+            행운팩에서 만나면 자세한 기록이 열려요.
+          </footer>
+        )}
       </div>
     </article>
   );

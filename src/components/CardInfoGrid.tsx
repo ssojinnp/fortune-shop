@@ -4,9 +4,9 @@ const infoIcons = ["✦", "■", "◷"];
 
 export function CardInfoGrid({ card }: { card: FortuneCard }) {
   const items = [
-    ["행운 아이템", card.luckyItems[0] ?? card.luckyItem],
-    ["행운 컬러", card.luckyColors[0] ?? card.luckyColor],
-    ["행운 시간", card.luckyTimes[0] ?? card.luckyTime],
+    ["행운 아이템", card.luckyItems[0]],
+    ["행운 컬러", card.luckyColors[0]],
+    ["행운 시간", card.luckyTimes[0]],
   ];
 
   return (

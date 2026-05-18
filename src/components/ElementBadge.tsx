@@ -1,12 +1,12 @@
 ﻿import type { CardElement } from "../types/card";
 
-const elementMeta: Record<CardElement, { label: string; icon: string; className: string }> = {
-  green: { label: "GREEN", icon: "♣", className: "border-[#4f9d7e] bg-[#dff7e9] text-[#2a2038]" },
-  moon: { label: "MOON", icon: "☾", className: "border-[#7251bd] bg-[#efe9ff] text-[#3b247a]" },
-  cloud: { label: "CLOUD", icon: "☁", className: "border-[#8d7fa8] bg-[#fff7df] text-[#2a2038]" },
-  spark: { label: "SPARK", icon: "✦", className: "border-[#b8842d] bg-[#f6c85f] text-[#2a2038]" },
-  water: { label: "WATER", icon: "◆", className: "border-[#77d7b2] bg-[#e7fff6] text-[#2a2038]" },
-  star: { label: "STAR", icon: "★", className: "border-[#d8b46a] bg-[#fff7df] text-[#2a2038]" },
+export const elementMeta: Record<CardElement, { label: string; icon: string; className: string }> = {
+  green: { label: "GREEN", icon: "♣", className: "border-[#1f9d63] bg-[#9ff0c3] text-[#083d26]" },
+  moon: { label: "MOON", icon: "☾", className: "border-[#7c3aed] bg-[#c4b5fd] text-[#2e1065]" },
+  cloud: { label: "CLOUD", icon: "☁", className: "border-[#0284c7] bg-[#bae6fd] text-[#0c4a6e]" },
+  spark: { label: "SPARK", icon: "✦", className: "border-[#ea580c] bg-[#fdba74] text-[#7c2d12]" },
+  water: { label: "WATER", icon: "◆", className: "border-[#0891b2] bg-[#67e8f9] text-[#164e63]" },
+  star: { label: "STAR", icon: "★", className: "border-[#ca8a04] bg-[#fde047] text-[#713f12]" },
 };
 
 export function ElementBadge({ element }: { element: CardElement }) {

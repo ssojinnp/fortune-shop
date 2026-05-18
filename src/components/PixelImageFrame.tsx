@@ -17,7 +17,7 @@ export function PixelImageFrame({
 }: PixelImageFrameProps) {
   const [backgroundFailed, setBackgroundFailed] = useState(false);
   const [characterFailed, setCharacterFailed] = useState(false);
-  const showBackground = Boolean(backgroundImage) && !backgroundFailed;
+  const showBackground = obtained && Boolean(backgroundImage) && !backgroundFailed;
   const showCharacter = obtained && Boolean(characterImage) && !characterFailed;
 
   useEffect(() => {
