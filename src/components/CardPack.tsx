@@ -5,7 +5,6 @@ type CardPackProps = {
   title?: string;
   subtitle?: string;
   characterEmoji?: string;
-  disabled?: boolean;
   packImage?: string;
 };
 
@@ -28,7 +27,6 @@ export function CardPack({
   variant = "purple",
   title = "오늘의 행운팩",
   characterEmoji = "✦",
-  disabled = false,
   packImage,
 }: CardPackProps) {
   const style = variantStyles[variant];
@@ -37,9 +35,7 @@ export function CardPack({
   if (packImage) {
     return (
       <article
-        className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-hidden bg-transparent ${
-          disabled ? "grayscale opacity-60" : ""
-        }`}
+        className="relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-hidden bg-transparent"
         aria-label={`${title} ${variant} card pack`}
       >
         <img
@@ -53,9 +49,7 @@ export function CardPack({
 
   return (
     <article
-      className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-hidden border-4 border-[#1c1630] bg-gradient-to-b ${style.fallback} shadow-[0_16px_0_rgba(20,13,36,0.42)] ${
-        disabled ? "grayscale opacity-60" : ""
-      }`}
+      className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-hidden border-4 border-[#1c1630] bg-gradient-to-b ${style.fallback} shadow-[0_16px_0_rgba(20,13,36,0.42)]`}
       aria-label={`${title} ${variant} card pack`}
     >
       <div className="absolute inset-3 border-2 border-white/22" />

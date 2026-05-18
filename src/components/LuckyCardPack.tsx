@@ -53,7 +53,6 @@ export function LuckyCardPack({
           variant={rarityVariant[rarity]}
           title="오늘의 행운팩"
           packImage={packImage}
-          disabled={disabled}
         />
       </motion.div>
     </motion.button>

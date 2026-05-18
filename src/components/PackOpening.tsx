@@ -411,7 +411,9 @@ export function PackOpening() {
   const { stage, rarity, isOpening, isRevealed, openPack, reset } =
     usePackOpening();
 
-  const todayCard = drawnCard ?? selectedCard;
+  const storedTodayCard = findCard(storage.todayDraw?.cardId);
+  const alreadyDrewToday = storage.todayDraw?.date === getTodayKey();
+  const todayCard = drawnCard ?? (alreadyDrewToday ? storedTodayCard ?? initialCard : initialCard);
   const todayPackImage = getPackImage(todayCard);
   const selectedCollectionItem = storage.collection[selectedCard.id];
   const selectedHistory = findLatestHistoryForCard(storage, selectedCard.id);
@@ -422,7 +424,6 @@ export function PackOpening() {
   const cardFlipped = stage === "flip" || stage === "revealed";
   const packOpened = stage === "tear" || cardVisible;
   const isSecret = rarity === "secret" && cardVisible;
-  const alreadyDrewToday = storage.todayDraw?.date === getTodayKey();
 
   const counts = useMemo(
     () =>
