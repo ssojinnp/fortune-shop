@@ -45,7 +45,7 @@ export function CardPack({
         <img
           src={packImageSrc}
           alt={`${title} 카드팩`}
-          className="h-full w-full scale-[1.03] object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
+          className="h-full w-full scale-x-[1.14] scale-y-[1.035] object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
         />
       </article>
     );
