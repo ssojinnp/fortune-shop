@@ -31,7 +31,7 @@ export function LuckyCardPack({
   return (
     <motion.button
       type="button"
-      className="absolute left-1/2 top-16 z-20 h-[552px] w-[340px] origin-center cursor-pointer bg-transparent p-0 text-left outline-none transition focus-visible:ring-4 focus-visible:ring-[#f6c85f]/70 disabled:cursor-default"
+      className="absolute left-1/2 top-8 z-20 h-[552px] w-[340px] origin-center cursor-pointer appearance-none border-0 bg-transparent p-0 text-left outline-none transition [webkit-tap-highlight-color:transparent] focus-visible:ring-4 focus-visible:ring-[#f6c85f]/70 disabled:cursor-default"
       animate={
         isShaking
           ? { x: [-170, -184, -154, -178, -170], rotate: [0, -5, 5, -2, 0] }

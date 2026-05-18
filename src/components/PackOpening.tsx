@@ -17,8 +17,6 @@ import { usePackOpening } from "./usePackOpening";
 
 type View = "today" | "collection" | "history" | "settings";
 
-const TEST_OPENED_CARD_ID = "card-016";
-
 const rarityLabels: Record<Rarity, string> = {
   common: "COMMON",
   rare: "RARE",
@@ -85,14 +83,6 @@ function SectionTitle({
 
 function findCard(cardId?: string) {
   return fortuneCards.find((card) => card.id === cardId);
-}
-
-function getTestOpenedCard() {
-  const card = findCard(TEST_OPENED_CARD_ID) ?? fortuneCards[0];
-  if (!card) {
-    throw new Error("No fortune cards are available for the opening test.");
-  }
-  return card;
 }
 
 function findLatestHistoryForCard(storage: AppStorage, cardId: string) {
@@ -305,6 +295,8 @@ function TodayScreen({
   const cardScale = stage === "tear" ? 0.9 : 1;
   const isPackStage = stage === "idle" || stage === "shake" || stage === "tear";
   const openLabel = alreadyDrewToday ? "오늘 카드 보기" : isRevealed ? "결과 다시 보기" : "오늘의 팩 열기";
+  const helperSpacingClass = isPackStage ? "mt-3" : "mt-5";
+  const noticeSpacingClass = isPackStage ? "mt-1" : "mt-2";
 
   return (
     <ContentPanel>
@@ -395,20 +387,25 @@ function TodayScreen({
           )}
         </div>
 
-        <p className="mt-0 text-center text-xs font-black leading-5 text-[#f6c85f]/90">
+        <p className={`${helperSpacingClass} text-center text-xs font-black leading-5 text-[#f6c85f]/90`}>
           {isOpening ? "행운팩을 여는 중이에요." : "카드팩을 눌러 열어보세요."}
         </p>
-        <p className="mt-1 text-center text-xs font-bold leading-5 text-[#efe9ff]/78">{notice}</p>
+        <p className={`${noticeSpacingClass} text-center text-xs font-bold leading-5 text-[#efe9ff]/78`}>
+          {notice}
+        </p>
       </div>
     </ContentPanel>
   );
 }
 
 export function PackOpening() {
-  const testOpenedCard = getTestOpenedCard();
+  const initialCard = fortuneCards[0];
+  if (!initialCard) {
+    throw new Error("No fortune cards are available.");
+  }
   const [view, setView] = useState<View>("today");
   const [storage, setStorage] = useState<AppStorage>({ histories: [], collection: {} });
-  const [selectedCard, setSelectedCard] = useState<FortuneCardData>(testOpenedCard);
+  const [selectedCard, setSelectedCard] = useState<FortuneCardData>(initialCard);
   const [drawnCard, setDrawnCard] = useState<FortuneCardData | null>(null);
   const [notice, setNotice] = useState("하루에 한 번, 오늘의 행운 친구를 만나보세요.");
   const { stage, rarity, isOpening, isRevealed, openPack, reset } =
@@ -442,24 +439,21 @@ export function PackOpening() {
   useEffect(() => {
     const nextStorage = readStorage();
     setStorage(nextStorage);
-    setSelectedCard(testOpenedCard);
 
     const storedTodayCard = findCard(nextStorage.todayDraw?.cardId);
     if (nextStorage.todayDraw?.date === getTodayKey() && storedTodayCard) {
-      setSelectedCard(testOpenedCard);
+      setDrawnCard(storedTodayCard);
+      setSelectedCard(storedTodayCard);
       setNotice("오늘은 이미 행운 친구를 만났어요. 내일 새로운 카드가 찾아올 거예요.");
+      return;
     }
-  }, [testOpenedCard]);
+
+    setDrawnCard(null);
+    setSelectedCard(initialCard);
+  }, [initialCard]);
 
   const handleOpen = () => {
-    reset();
-    setDrawnCard(testOpenedCard);
-    setSelectedCard(testOpenedCard);
-    setView("today");
-    openPack(testOpenedCard.rarity);
-    return;
-
-    const storedTodayCard = findCard(storage.todayDraw?.cardId) ?? testOpenedCard;
+    const storedTodayCard = findCard(storage.todayDraw?.cardId) ?? initialCard;
     if (storage.todayDraw?.date === getTodayKey() && storedTodayCard) {
       setDrawnCard(storedTodayCard);
       setSelectedCard(storedTodayCard);
@@ -489,7 +483,7 @@ export function PackOpening() {
     resetStorage();
     setStorage({ histories: [], collection: {} });
     setDrawnCard(null);
-    setSelectedCard(fortuneCards[0]);
+    setSelectedCard(initialCard);
     setNotice("저장된 도감과 기록을 초기화했어요.");
     reset();
     setView("today");

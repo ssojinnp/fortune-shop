@@ -37,7 +37,7 @@ export function CardPack({
   if (packImage) {
     return (
       <article
-        className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-visible bg-transparent ${
+        className={`relative mx-auto grid h-[552px] w-[340px] select-none place-items-center overflow-hidden bg-transparent ${
           disabled ? "grayscale opacity-60" : ""
         }`}
         aria-label={`${title} ${variant} card pack`}
@@ -45,7 +45,7 @@ export function CardPack({
         <img
           src={packImageSrc}
           alt={`${title} 카드팩`}
-          className="h-full w-full scale-x-[1.14] scale-y-[1.035] object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
+          className="absolute left-1/2 top-0 h-full w-[552px] max-w-none -translate-x-1/2 object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
         />
       </article>
     );
