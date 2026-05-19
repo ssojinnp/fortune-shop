@@ -16,6 +16,7 @@ import { rarityEffects, type Rarity } from "./rarityEffects";
 import { usePackOpening } from "./usePackOpening";
 
 type View = "today" | "collection" | "history" | "settings";
+type CollectionFilter = "all" | "owned" | "missing";
 
 const rarityLabels: Record<Rarity, string> = {
   common: "COMMON",
@@ -51,9 +52,9 @@ function getPackImage(card: FortuneCardData) {
 }
 
 const contentPanelClass =
-  "min-h-[620px] w-full border-2 border-[#5a3f87] bg-[#241d3f]/72 p-5 shadow-[7px_7px_0_rgba(15,12,31,0.34)]";
+  "min-h-[620px] w-full border-2 border-[#5a3f87] bg-[#241d3f]/72 p-3 shadow-[7px_7px_0_rgba(15,12,31,0.34)] sm:p-4 lg:p-5";
 
-const surfaceClass = "border-2 border-[#5a3f87] bg-[#17142b]/72 p-4 shadow-[4px_4px_0_rgba(15,12,31,0.22)]";
+const surfaceClass = "overflow-hidden rounded-[14px] border-2 border-[#5a3f87] bg-[#17142b]/72 p-3 shadow-[4px_4px_0_rgba(15,12,31,0.22)] sm:p-4";
 
 function ContentPanel({ children }: { children: ReactNode }) {
   return <section className={contentPanelClass}>{children}</section>;
@@ -62,21 +63,28 @@ function ContentPanel({ children }: { children: ReactNode }) {
 function SectionTitle({
   eyebrow,
   title,
+  description,
   aside,
 }: {
   eyebrow: string;
   title: string;
+  description?: string;
   aside?: ReactNode;
 }) {
   return (
-    <div className="mb-5 flex min-h-12 flex-wrap items-end justify-between gap-3">
+    <div className="mb-4 flex min-h-12 flex-wrap items-end justify-between gap-2 sm:mb-5 sm:gap-3">
       <div>
         <p className="font-modern-en text-xs font-semibold uppercase tracking-[0.12em] text-[#f6c85f]/85">
           {eyebrow}
         </p>
-        <h2 className="mt-1 text-2xl font-black leading-tight text-[#fff9e8]">{title}</h2>
+        <h2 className="mt-1 text-xl font-black leading-tight text-[#fff9e8] sm:text-2xl">{title}</h2>
+        {description ? (
+          <p className="mt-1 text-xs font-medium leading-5 text-[#d9cfee] sm:text-sm">
+            {description}
+          </p>
+        ) : null}
       </div>
-      {aside ? <div className="text-right text-xs font-semibold text-[#efe9ff]/82">{aside}</div> : null}
+      {aside ? <div className="w-full text-left text-xs font-semibold text-[#efe9ff]/82 sm:w-auto sm:text-right">{aside}</div> : null}
     </div>
   );
 }
@@ -85,22 +93,20 @@ function findCard(cardId?: string) {
   return fortuneCards.find((card) => card.id === cardId);
 }
 
-function findLatestHistoryForCard(storage: AppStorage, cardId: string) {
-  return storage.histories.find((entry) => entry.cardId === cardId) ?? storage.histories[0];
-}
-
 function CollectionGrid({
+  cards,
   selectedId,
   storage,
   onSelect,
 }: {
+  cards: FortuneCardData[];
   selectedId: string;
   storage: AppStorage;
   onSelect: (card: FortuneCardData) => void;
 }) {
   return (
-    <section className="grid max-h-[680px] grid-cols-1 gap-2.5 overflow-auto pr-1 md:grid-cols-2">
-      {fortuneCards.map((card) => {
+    <section className="grid max-h-[680px] grid-cols-1 gap-2 overflow-auto md:grid-cols-2 md:gap-2.5 md:pr-1">
+      {cards.map((card) => {
         const selected = card.id === selectedId;
         const collectionItem = storage.collection[card.id];
         const obtained = Boolean(collectionItem);
@@ -110,15 +116,15 @@ function CollectionGrid({
         return (
           <button
             key={card.id}
-            className={`grid min-h-[112px] grid-cols-[76px_minmax(0,1fr)] items-stretch gap-3 border-2 p-2.5 text-left transition hover:-translate-y-0.5 ${
+            className={`grid min-h-[112px] grid-cols-[72px_minmax(0,1fr)] items-stretch gap-2 overflow-hidden rounded-[14px] border-2 p-2 text-left transition sm:grid-cols-[76px_minmax(0,1fr)] sm:gap-3 sm:p-2.5 ${
               selected
                 ? "border-[#f6c85f] bg-[#fff7df]/12"
-                : "border-[#5a3f87] bg-[#17142b]/68 hover:border-[#b99cff]"
+                : "border-[#5a3f87] bg-[#17142b]/68 hover:border-[#b99cff] hover:bg-[#221b3c]/82"
             }`}
             onClick={() => onSelect(card)}
             aria-label={obtained ? `${card.name} 도감 카드` : `${card.name} 미획득 카드`}
           >
-            <div className="grid min-h-[90px] place-items-center">
+            <div className="grid min-h-[84px] place-items-center sm:min-h-[90px]">
               <PixelCardArt card={card} fitContainer muted={!obtained} revealed={obtained} />
             </div>
             <div className="grid min-w-0 content-center gap-1.5">
@@ -134,10 +140,10 @@ function CollectionGrid({
               </div>
 
               <div className="min-w-0 space-y-1">
-                <p className="truncate text-[16px] font-black leading-5 text-[#fff9e8]">
+                <p className="truncate text-[15px] font-black leading-5 text-[#fff9e8] sm:text-[16px]">
                   {card.name}
                 </p>
-                <p className="line-clamp-2 text-[12px] font-semibold leading-[16px] text-[#ddd3ee]">
+                <p className="line-clamp-2 text-[11px] font-semibold leading-[15px] text-[#ddd3ee] sm:text-[12px] sm:leading-[16px]">
                   {card.role}
                 </p>
               </div>
@@ -165,10 +171,12 @@ function CollectionGrid({
 
 function HistoryRail({
   storage,
+  selectedHistoryId,
   onSelect,
 }: {
   storage: AppStorage;
-  onSelect: (card: FortuneCardData) => void;
+  selectedHistoryId?: string | null;
+  onSelect: (historyId: string) => void;
 }) {
   const entries = storage.histories
     .map((entry) => ({
@@ -186,20 +194,31 @@ function HistoryRail({
   }
 
   return (
-    <section className="grid max-h-[680px] gap-2 overflow-auto pr-1 md:grid-cols-2 xl:grid-cols-3">
+    <section className="grid auto-rows-min content-start gap-2 self-start overflow-auto md:grid-cols-2 md:pr-1 xl:max-h-[820px] xl:grid-cols-1 xl:pr-2 2xl:grid-cols-2">
       {entries.map((entry) => (
         <button
           key={entry.id}
-          className="flex items-start gap-3 rounded-[14px] border-2 border-[#5a3f87] bg-[#1d1734]/78 p-3 text-left transition hover:-translate-y-0.5 hover:border-[#b99cff]"
-          onClick={() => onSelect(entry.card)}
+          className={`grid grid-cols-[64px_minmax(0,1fr)] items-start gap-2 overflow-hidden rounded-[14px] border-2 p-2.5 text-left transition sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-3 sm:p-3 ${
+            entry.id === selectedHistoryId
+              ? "border-[#f6c85f] bg-[#fff7df]/12"
+              : "border-[#5a3f87] bg-[#17142b]/68 hover:border-[#b99cff] hover:bg-[#221b3c]/82"
+          }`}
+          onClick={() => onSelect(entry.id)}
         >
-          <PixelCardArt card={entry.card} />
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-black text-[#fff9e8]">{entry.card.name}</span>
-            <span className="mt-1 block text-xs font-bold text-[#ddd3ee]">
-              {entry.date} · {rarityLabels[entry.card.rarity]}
+          <div className="grid h-16 w-16 place-items-center overflow-hidden rounded-[12px] border border-[#5a3f87] bg-[#120f22] sm:h-[72px] sm:w-[72px]">
+            <PixelCardArt card={entry.card} />
+          </div>
+          <span className="grid min-w-0 gap-1 self-center">
+            <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+              <span className="truncate text-[13px] font-black text-[#fff9e8] sm:text-sm">{entry.card.name}</span>
+              <span className="border border-[#5a3f87] bg-[#241d3f]/82 px-1.5 py-0.5 text-[9px] font-black leading-none text-[#f6c85f]">
+                {rarityLabels[entry.card.rarity]}
+              </span>
             </span>
-            <span className="mt-1 block line-clamp-2 text-[11px] font-bold leading-5 text-[#c3b5dd]">
+            <span className="block text-[10px] font-bold leading-4 text-[#ddd3ee] sm:text-[11px]">
+              {entry.date}
+            </span>
+            <span className="block line-clamp-2 text-[11px] font-bold leading-[1.35] text-[#c3b5dd]">
               {entry.message}
             </span>
           </span>
@@ -404,8 +423,10 @@ export function PackOpening() {
     throw new Error("No fortune cards are available.");
   }
   const [view, setView] = useState<View>("today");
+  const [collectionFilter, setCollectionFilter] = useState<CollectionFilter>("all");
   const [storage, setStorage] = useState<AppStorage>({ histories: [], collection: {} });
   const [selectedCard, setSelectedCard] = useState<FortuneCardData>(initialCard);
+  const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
   const [drawnCard, setDrawnCard] = useState<FortuneCardData | null>(null);
   const [notice, setNotice] = useState("하루에 한 번, 오늘의 행운 친구를 만나보세요.");
   const { stage, rarity, isOpening, isRevealed, openPack, reset } =
@@ -416,9 +437,18 @@ export function PackOpening() {
   const todayCard = drawnCard ?? (alreadyDrewToday ? storedTodayCard ?? initialCard : initialCard);
   const todayPackImage = getPackImage(todayCard);
   const selectedCollectionItem = storage.collection[selectedCard.id];
-  const selectedHistory = findLatestHistoryForCard(storage, selectedCard.id);
+  const selectedHistory =
+    storage.histories.find((entry) => entry.id === selectedHistoryId) ??
+    storage.histories[0];
   const selectedHistoryCard = findCard(selectedHistory?.cardId) ?? selectedCard;
   const selectedHistoryCollectionItem = storage.collection[selectedHistoryCard.id];
+  const obtainedCount = Object.keys(storage.collection).length;
+  const filteredCollectionCards = fortuneCards.filter((card) => {
+    const obtained = Boolean(storage.collection[card.id]);
+    if (collectionFilter === "owned") return obtained;
+    if (collectionFilter === "missing") return !obtained;
+    return true;
+  });
   const effect = rarityEffects[todayCard.rarity];
   const cardVisible = stage === "rise" || stage === "flip" || stage === "revealed";
   const cardFlipped = stage === "flip" || stage === "revealed";
@@ -440,6 +470,7 @@ export function PackOpening() {
   useEffect(() => {
     const nextStorage = readStorage();
     setStorage(nextStorage);
+    setSelectedHistoryId(nextStorage.todayDraw?.id ?? nextStorage.histories[0]?.id ?? null);
 
     const storedTodayCard = findCard(nextStorage.todayDraw?.cardId);
     if (nextStorage.todayDraw?.date === getTodayKey() && storedTodayCard) {
@@ -469,6 +500,7 @@ export function PackOpening() {
     const card = drawFortuneCard();
     const nextStorage = applyDrawToStorage(card, storage);
     setStorage(nextStorage);
+    setSelectedHistoryId(nextStorage.todayDraw?.id ?? nextStorage.histories[0]?.id ?? null);
     setDrawnCard(card);
     setSelectedCard(card);
     setView("today");
@@ -483,6 +515,7 @@ export function PackOpening() {
   const handleReset = () => {
     resetStorage();
     setStorage({ histories: [], collection: {} });
+    setSelectedHistoryId(null);
     setDrawnCard(null);
     setSelectedCard(initialCard);
     setNotice("저장된 도감과 기록을 초기화했어요.");
@@ -557,21 +590,53 @@ export function PackOpening() {
             <SectionTitle
               eyebrow="Collection"
               title="행운도감"
+              description="만난 캐릭터를 수집하고, 현재 카드 상태를 살펴보는 공간이에요."
               aside={
                 <span>
-                  획득 {Object.keys(storage.collection).length} / {fortuneCards.length}
+                  획득 {obtainedCount} / {fortuneCards.length}
                 </span>
               }
             />
 
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-              <CollectionGrid
-                selectedId={selectedCard.id}
-                storage={storage}
-                onSelect={setSelectedCard}
-              />
+            <div className="grid items-start gap-3 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-5">
+              <div className="grid content-start self-start gap-3">
+                <div className={`${surfaceClass} grid auto-rows-min grid-cols-3 gap-2 p-2`}>
+                  {[
+                    { id: "all", label: "전체", count: fortuneCards.length },
+                    { id: "owned", label: "획득", count: obtainedCount },
+                    { id: "missing", label: "미획득", count: fortuneCards.length - obtainedCount },
+                  ].map((filter) => {
+                    const active = collectionFilter === filter.id;
 
-              <aside className="xl:sticky xl:top-5">
+                    return (
+                      <button
+                        key={filter.id}
+                        type="button"
+                        className={`flex h-10 items-center justify-between gap-2 rounded-[12px] border px-3 text-left transition ${
+                          active
+                            ? "border-[#f6c85f] bg-[#fff7df]/12 text-[#fff9e8]"
+                            : "border-[#5a3f87] bg-[#241d3f]/72 text-[#ddd3ee] hover:border-[#b99cff] hover:bg-[#2a2147]"
+                        }`}
+                        onClick={() => setCollectionFilter(filter.id as CollectionFilter)}
+                      >
+                        <p className="text-[10px] font-black uppercase leading-none tracking-[0.12em] text-[#f6c85f]/85">
+                          {filter.label}
+                        </p>
+                        <p className="shrink-0 text-sm font-black leading-none">{filter.count}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <CollectionGrid
+                  cards={filteredCollectionCards}
+                  selectedId={selectedCard.id}
+                  storage={storage}
+                  onSelect={setSelectedCard}
+                />
+              </div>
+
+              <aside className="pt-1 xl:sticky xl:top-5 xl:pt-0">
                 <FortuneCard
                   card={selectedCard}
                   collectionItem={selectedCollectionItem}
@@ -604,37 +669,63 @@ export function PackOpening() {
 
         {view === "history" && (
           <ContentPanel>
-            <SectionTitle eyebrow="History" title="뽑기 기록" />
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <SectionTitle
+              eyebrow="History"
+              title="뽑기 기록"
+              description="카드를 실제로 뽑은 날짜와 그날의 메시지, 행운 정보를 다시 확인하는 기록 공간이에요. 기록 리스트에서 카드를 선택하면 오른쪽에서 자세히 볼 수 있어요."
+              aside={<span>날짜별 오픈 히스토리</span>}
+            />
+            <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-5">
               <HistoryRail
                 storage={storage}
-                onSelect={setSelectedCard}
+                selectedHistoryId={selectedHistoryId}
+                onSelect={(historyId) => {
+                  setSelectedHistoryId(historyId);
+                  const nextHistory = storage.histories.find((entry) => entry.id === historyId);
+                  const nextCard = findCard(nextHistory?.cardId);
+                  if (nextCard) {
+                    setSelectedCard(nextCard);
+                  }
+                }}
               />
-              <aside className="grid gap-4 xl:sticky xl:top-5 xl:self-start">
+              <aside className="min-w-0 grid w-full max-w-[340px] justify-self-start gap-3 pt-1 xl:sticky xl:top-5 xl:self-start xl:gap-4 xl:pt-0">
                 {selectedHistory ? (
-                  <div className="space-y-4">
+                  <>
                     <FortuneCard
                       card={selectedHistoryCard}
                       collectionItem={selectedHistoryCollectionItem}
                       obtained
                     />
-                    <div className={`${surfaceClass} text-[#fff9e8]`}>
-                      <p className="font-modern-en text-xs font-semibold uppercase tracking-[0.12em] text-[#f6c85f]">
-                        {selectedHistory.date}
-                      </p>
-                      <p className="mt-2 text-sm font-black text-[#ddd3ee]">
-                        {rarityLabels[selectedHistoryCard.rarity]} · {selectedHistoryCard.element}
-                      </p>
-                      <p className="mt-3 text-sm font-semibold leading-6 text-[#f4ecff]">
-                        {selectedHistory.message}
-                      </p>
-                      <div className="mt-4 grid gap-2 text-xs font-bold text-[#d8cdea]">
-                        <div className="rounded-[10px] bg-[#241d3f] px-3 py-2">행운 아이템 · {selectedHistory.luckyItem}</div>
-                        <div className="rounded-[10px] bg-[#241d3f] px-3 py-2">행운 컬러 · {selectedHistory.luckyColor}</div>
-                        <div className="rounded-[10px] bg-[#241d3f] px-3 py-2">행운 시간 · {selectedHistory.luckyTime}</div>
+
+                    <div className={`${surfaceClass} w-full overflow-hidden text-[#fff9e8]`}>
+                      <div className="grid gap-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full border border-[#5a3f87] bg-[#241d3f] px-2.5 py-1 text-[10px] font-black text-[#fff9e8]">
+                            {selectedHistory.date}
+                          </span>
+                          <span className="rounded-full border border-[#5a3f87] bg-[#241d3f] px-2.5 py-1 text-[10px] font-black text-[#f6c85f]">
+                            {rarityLabels[selectedHistoryCard.rarity]}
+                          </span>
+                          <span className="rounded-full border border-[#5a3f87] bg-[#241d3f] px-2.5 py-1 text-[10px] font-black text-[#ddd3ee]">
+                            {selectedHistoryCard.element}
+                          </span>
+                        </div>
+                        <div className="rounded-[12px] border border-[#5a3f87] bg-[#241d3f]/92 p-3">
+                          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#f6c85f]/85">
+                            Day Message
+                        </p>
+                          <p className="mt-2 text-sm font-semibold leading-6 text-[#f4ecff]">
+                            {selectedHistory.message}
+                          </p>
+                        </div>
+                      <div className="grid gap-2 text-xs font-bold text-[#d8cdea]">
+                        <div className="rounded-[12px] bg-[#241d3f] px-3 py-2">행운 아이템 · {selectedHistory.luckyItem}</div>
+                        <div className="rounded-[12px] bg-[#241d3f] px-3 py-2">행운 컬러 · {selectedHistory.luckyColor}</div>
+                        <div className="rounded-[12px] bg-[#241d3f] px-3 py-2">행운 시간 · {selectedHistory.luckyTime}</div>
                       </div>
                     </div>
-                  </div>
+                    </div>
+                  </>
                 ) : (
                   <div className={surfaceClass}>
                     <p className="text-sm font-medium leading-7 text-[#ddd3ee]">
@@ -642,11 +733,6 @@ export function PackOpening() {
                     </p>
                   </div>
                 )}
-                <div className={surfaceClass}>
-                  <p className="text-sm font-medium leading-7 text-[#ddd3ee]">
-                    기록 리스트에서 카드를 선택하면 해당 날짜의 메시지와 행운 정보를 오른쪽에서 다시 볼 수 있어요.
-                  </p>
-                </div>
               </aside>
             </div>
           </ContentPanel>
