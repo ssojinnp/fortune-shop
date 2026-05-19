@@ -295,28 +295,28 @@ function TodayScreen({
   const cardScale = stage === "tear" ? 0.9 : 1;
   const isPackStage = stage === "idle" || stage === "shake" || stage === "tear";
   const openLabel = alreadyDrewToday ? "오늘 카드 보기" : isRevealed ? "결과 다시 보기" : "오늘의 팩 열기";
-  const helperSpacingClass = isPackStage ? "mt-3" : "mt-5";
-  const noticeSpacingClass = isPackStage ? "mt-1" : "mt-2";
+  const helperSpacingClass = isPackStage ? "mt-2 max-[420px]:mt-1" : "mt-3 max-[420px]:mt-1.5";
+  const noticeSpacingClass = isPackStage ? "mt-1 max-[420px]:mt-0.5" : "mt-1.5 max-[420px]:mt-1";
 
   return (
     <ContentPanel>
       <div className="mx-auto w-full max-w-[560px]">
-        <div className="relative mx-auto h-[620px] max-w-[560px] overflow-visible">
+        <div className="relative mx-auto h-[620px] max-w-[560px] overflow-visible max-[420px]:h-[582px] max-[380px]:h-[548px] max-[360px]:h-[514px]">
           <motion.div
-            className="pointer-events-none absolute left-1/2 top-24 h-[430px] w-[560px] -translate-x-1/2"
+            className="pointer-events-none absolute left-1/2 top-24 h-[430px] w-[560px] -translate-x-1/2 max-[420px]:top-[98px] max-[420px]:h-[404px] max-[420px]:w-[526px] max-[380px]:top-[91px] max-[380px]:h-[378px] max-[380px]:w-[492px] max-[360px]:top-[84px] max-[360px]:h-[352px] max-[360px]:w-[458px]"
             animate={
               packOpened
                 ? { opacity: [0, 1, 0.84], scale: [0.7, 1.15, 1] }
                 : { opacity: 0, scale: 0.8 }
             }
             transition={{ duration: 0.55 }}
-          >
-            <div
-              className={`absolute inset-0 rounded-full ${effect.burst} blur-2xl`}
-              style={{ boxShadow: effect.glow }}
-            />
-              <div className="absolute left-1/2 top-4 h-[390px] w-24 -translate-x-1/2 bg-[#fff7df]/70 blur-xl" />
-          </motion.div>
+            >
+              <div
+                className={`absolute inset-0 rounded-full ${effect.burst} blur-2xl`}
+                style={{ boxShadow: effect.glow }}
+              />
+              <div className="absolute left-1/2 top-4 h-[390px] w-24 -translate-x-1/2 bg-[#fff7df]/70 blur-xl max-[420px]:h-[366px] max-[420px]:w-[88px] max-[380px]:h-[344px] max-[380px]:w-[82px] max-[360px]:h-[321px] max-[360px]:w-[76px]" />
+            </motion.div>
 
           {isSecret && (
             <motion.div
@@ -349,12 +349,12 @@ function TodayScreen({
 
           {shouldRenderCard && (
             <div
-              className={`absolute left-1/2 top-16 h-[552px] w-[340px] -translate-x-1/2 [perspective:1200px] ${
+              className={`absolute left-1/2 top-16 h-[552px] w-[340px] max-w-full -translate-x-1/2 [perspective:1200px] max-[420px]:h-[519px] max-[420px]:w-[320px] max-[380px]:h-[486px] max-[380px]:w-[300px] max-[360px]:h-[454px] max-[360px]:w-[280px] ${
                 cardFlipped ? "z-40" : "z-10"
               }`}
             >
               <motion.div
-                className="h-full w-full cursor-grab select-none touch-none active:cursor-grabbing"
+                className="absolute left-1/2 top-0 h-[552px] w-[340px] -translate-x-1/2 origin-top cursor-grab select-none touch-none active:cursor-grabbing max-[420px]:scale-[0.941] max-[380px]:scale-[0.882] max-[360px]:scale-[0.8235]"
                 initial={false}
                 animate={{
                   y: cardY,
@@ -610,7 +610,7 @@ export function PackOpening() {
                 storage={storage}
                 onSelect={setSelectedCard}
               />
-              <aside className={surfaceClass}>
+              <aside className="grid gap-4 xl:sticky xl:top-5 xl:self-start">
                 {selectedHistory ? (
                   <div className="space-y-4">
                     <FortuneCard
@@ -618,7 +618,7 @@ export function PackOpening() {
                       collectionItem={selectedHistoryCollectionItem}
                       obtained
                     />
-                    <div className="rounded-[14px] border-2 border-[#5a3f87] bg-[#1d1734]/82 p-4 text-[#fff9e8]">
+                    <div className={`${surfaceClass} text-[#fff9e8]`}>
                       <p className="font-modern-en text-xs font-semibold uppercase tracking-[0.12em] text-[#f6c85f]">
                         {selectedHistory.date}
                       </p>
@@ -636,14 +636,18 @@ export function PackOpening() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm font-medium leading-7 text-[#ddd3ee]">
-                    아직 기록된 카드가 없습니다. 오늘 카드를 열면 여기에 뽑기 기록이 쌓입니다.
-                  </p>
+                  <div className={surfaceClass}>
+                    <p className="text-sm font-medium leading-7 text-[#ddd3ee]">
+                      아직 기록된 카드가 없습니다. 오늘 카드를 열면 여기에 뽑기 기록이 쌓입니다.
+                    </p>
+                  </div>
                 )}
-              <p className="hidden text-sm font-medium leading-7 text-[#ddd3ee]">
-                기록에서 카드를 선택하면 도감 상세 화면으로 이동합니다. 오늘 화면은 카드팩 오픈 연출만 보여주도록 분리했습니다.
-              </p>
-            </aside>
+                <div className={surfaceClass}>
+                  <p className="text-sm font-medium leading-7 text-[#ddd3ee]">
+                    기록 리스트에서 카드를 선택하면 해당 날짜의 메시지와 행운 정보를 오른쪽에서 다시 볼 수 있어요.
+                  </p>
+                </div>
+              </aside>
             </div>
           </ContentPanel>
         )}

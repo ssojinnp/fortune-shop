@@ -80,58 +80,60 @@ export function FortuneCard({ card, collectionItem, obtained = true }: FortuneCa
   const luckyTimes = obtained ? card.luckyTimes : ["?", "?", "?"];
 
   return (
-    <article
-      className="relative mx-auto h-[552px] w-[340px] max-w-full overflow-hidden rounded-[22px] border-4 border-[#3b247a] bg-[#fff7df] p-5 text-[#2a2038] shadow-[0_14px_0_rgba(15,12,31,0.26),inset_0_0_0_4px_#f6dfaa]"
-      aria-label={`${card.name} fortune card`}
-    >
-      <CardDecor />
+    <div className="relative mx-auto h-[552px] w-[340px] max-w-full max-[420px]:h-[519px] max-[420px]:w-[320px] max-[380px]:h-[486px] max-[380px]:w-[300px] max-[360px]:h-[454px] max-[360px]:w-[280px]">
+      <article
+        className="absolute left-1/2 top-0 h-[552px] w-[340px] -translate-x-1/2 origin-top overflow-hidden rounded-[22px] border-4 border-[#3b247a] bg-[#fff7df] p-5 text-[#2a2038] shadow-[0_14px_0_rgba(15,12,31,0.26),inset_0_0_0_4px_#f6dfaa] max-[420px]:scale-[0.941] max-[380px]:scale-[0.882] max-[360px]:scale-[0.8235]"
+        aria-label={`${card.name} fortune card`}
+      >
+        <CardDecor />
 
-      <div className="relative z-10 grid h-full grid-rows-[30px_88px_188px_62px_56px_38px] gap-2">
-        <header className="flex items-start justify-between gap-3">
-          <div className="rounded-[6px] border-2 border-[#efdfbd] bg-white/75 px-2 py-1 text-xs font-black leading-none tracking-wide shadow-[2px_2px_0_rgba(47,31,63,0.1)]">
-            No.{String(card.no).padStart(3, "0")}
-          </div>
-          <RarityBadge rarity={card.rarity} />
-        </header>
+        <div className="relative z-10 grid h-full grid-rows-[30px_88px_188px_62px_56px_38px] gap-2">
+          <header className="flex items-start justify-between gap-3">
+            <div className="rounded-[6px] border-2 border-[#efdfbd] bg-white/75 px-2 py-1 text-xs font-black leading-none tracking-wide shadow-[2px_2px_0_rgba(47,31,63,0.1)]">
+              No.{String(card.no).padStart(3, "0")}
+            </div>
+            <RarityBadge rarity={card.rarity} />
+          </header>
 
-        <section className="rounded-[12px] border-2 border-[#d8b46a] bg-[#fff9e8] px-3 py-2 text-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.86),0_3px_0_rgba(143,90,62,0.14)]">
-          <p className="mx-auto inline-block rounded-[999px] border border-[#d8b46a] bg-[#fff7df] px-3 py-0.5 text-[10px] font-black leading-none text-[#6d4aff]">
-            ✦ 오늘의 행운카드 ✦
-          </p>
-          <h2 className="mt-1.5 text-[21px] font-black leading-none tracking-normal">{card.name}</h2>
-          <p className="mt-1 truncate text-[11px] font-extrabold leading-none text-[#5f536f]">{card.role}</p>
-        </section>
+          <section className="rounded-[12px] border-2 border-[#d8b46a] bg-[#fff9e8] px-3 py-2 text-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.86),0_3px_0_rgba(143,90,62,0.14)]">
+            <p className="mx-auto inline-block rounded-[999px] border border-[#d8b46a] bg-[#fff7df] px-3 py-0.5 text-[10px] font-black leading-none text-[#6d4aff]">
+              ✦ 오늘의 행운카드 ✦
+            </p>
+            <h2 className="mt-1.5 text-[21px] font-black leading-none tracking-normal">{card.name}</h2>
+            <p className="mt-1 truncate text-[11px] font-extrabold leading-none text-[#5f536f]">{card.role}</p>
+          </section>
 
-        <PixelImageFrame
-          backgroundImage={card.backgroundImage}
-          characterImage={card.image}
-          placeholderEmoji={card.placeholderEmoji}
-          alt={card.name}
-          obtained={obtained}
-        />
+          <PixelImageFrame
+            backgroundImage={card.backgroundImage}
+            characterImage={card.image}
+            placeholderEmoji={card.placeholderEmoji}
+            alt={card.name}
+            obtained={obtained}
+          />
 
-        <section className="grid place-items-center rounded-[12px] border border-[#d8b46a] bg-[#fff9e8] px-4 py-2 text-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.78),0_3px_0_rgba(217,155,114,0.14)]">
-          <p className="line-clamp-2 text-[13px] font-black leading-[1.45] text-[#2a2038]">
-            <span className="mr-1 text-[#7557bf]">“</span>
-            {message}
-            <span className="ml-1 text-[#7557bf]">”</span>
-          </p>
-        </section>
+          <section className="grid place-items-center rounded-[12px] border border-[#d8b46a] bg-[#fff9e8] px-4 py-2 text-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.78),0_3px_0_rgba(217,155,114,0.14)]">
+            <p className="line-clamp-2 text-[13px] font-black leading-[1.45] text-[#2a2038]">
+              <span className="mr-1 text-[#7557bf]">“</span>
+              {message}
+              <span className="ml-1 text-[#7557bf]">”</span>
+            </p>
+          </section>
 
-        <section className="grid grid-cols-3 gap-2">
-          <InfoTile label="행운 아이템" value={luckyItems[0]} />
-          <InfoTile label="행운 컬러" value={luckyColors[0]} />
-          <InfoTile label="행운 시간" value={luckyTimes[0]} />
-        </section>
+          <section className="grid grid-cols-3 gap-2">
+            <InfoTile label="행운 아이템" value={luckyItems[0]} />
+            <InfoTile label="행운 컬러" value={luckyColors[0]} />
+            <InfoTile label="행운 시간" value={luckyTimes[0]} />
+          </section>
 
-        {obtained ? (
-          <IntimacyFooter level={level} count={count} />
-        ) : (
-          <footer className="grid h-[38px] place-items-center overflow-hidden rounded-[8px] border border-[#d8b46a] bg-[#fff9e8] px-2.5 py-1 text-center text-[10px] font-black text-[#6a4a3c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.68)]">
-            행운팩에서 만나면 자세한 기록이 열려요.
-          </footer>
-        )}
-      </div>
-    </article>
+          {obtained ? (
+            <IntimacyFooter level={level} count={count} />
+          ) : (
+            <footer className="grid h-[38px] place-items-center overflow-hidden rounded-[8px] border border-[#d8b46a] bg-[#fff9e8] px-2.5 py-1 text-center text-[10px] font-black text-[#6a4a3c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.68)]">
+              행운팩에서 만나면 자세한 기록이 열려요.
+            </footer>
+          )}
+        </div>
+      </article>
+    </div>
   );
 }

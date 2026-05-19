@@ -30,7 +30,7 @@ export function CardPack({
   packImage,
 }: CardPackProps) {
   const style = variantStyles[variant];
-  const packImageSrc = packImage ? `${packImage}?v=transparent-20260514` : "";
+  const packImageSrc = packImage ? `${packImage}?v=pack-center-20260519` : "";
 
   if (packImage) {
     return (
@@ -41,7 +41,7 @@ export function CardPack({
         <img
           src={packImageSrc}
           alt={`${title} 카드팩`}
-          className="absolute left-1/2 top-0 h-full w-[552px] max-w-none -translate-x-1/2 object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto]"
+          className="absolute left-1/2 top-0 h-full w-[728px] max-w-none -translate-x-1/2 object-contain drop-shadow-[0_16px_0_rgba(0,0,0,0.28)] [image-rendering:auto] max-[420px]:w-[700px] max-[380px]:w-[672px] max-[360px]:w-[644px]"
         />
       </article>
     );

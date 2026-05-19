@@ -31,11 +31,11 @@ export function LuckyCardPack({
   return (
     <motion.button
       type="button"
-      className="absolute left-1/2 top-8 z-20 h-[552px] w-[340px] origin-center cursor-pointer appearance-none border-0 bg-transparent p-0 text-left outline-none transition [webkit-tap-highlight-color:transparent] focus-visible:ring-4 focus-visible:ring-[#f6c85f]/70 disabled:cursor-default"
+      className="absolute left-1/2 top-8 z-20 h-[552px] w-[340px] max-w-full -translate-x-1/2 origin-center cursor-pointer appearance-none border-0 bg-transparent p-0 text-left outline-none transition [webkit-tap-highlight-color:transparent] focus-visible:ring-4 focus-visible:ring-[#f6c85f]/70 disabled:cursor-default max-[420px]:h-[519px] max-[420px]:w-[320px] max-[380px]:h-[486px] max-[380px]:w-[300px] max-[360px]:h-[454px] max-[360px]:w-[280px]"
       animate={
         isShaking
-          ? { x: [-170, -184, -154, -178, -170], rotate: [0, -5, 5, -2, 0] }
-          : { x: -170, rotate: 0 }
+          ? { x: [0, -14, 16, -8, 0], rotate: [0, -5, 5, -2, 0] }
+          : { x: 0, rotate: 0 }
       }
       whileHover={disabled ? undefined : { y: -6, scale: 1.02 }}
       whileTap={disabled ? undefined : { y: 0, scale: 0.98 }}
@@ -45,7 +45,7 @@ export function LuckyCardPack({
       aria-label={label}
     >
       <motion.div
-        className="origin-top"
+        className="absolute left-1/2 top-0 h-[552px] w-[340px] -translate-x-1/2 origin-top max-[420px]:scale-[0.941] max-[380px]:scale-[0.882] max-[360px]:scale-[0.8235]"
         animate={isOpen ? { y: -18, scaleY: 0.92, opacity: 0.82 } : { y: 0, scaleY: 1, opacity: 1 }}
         transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
       >
